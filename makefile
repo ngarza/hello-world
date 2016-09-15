@@ -1,30 +1,26 @@
-# Makefile for C project
-#
-# TARGET = test
-#
-# FILES   =   $(wildcard *.c)
-# OBJS    =   $(FILES:.c=.o)
-# ASMS    = $(FILES:.c=.s)
-#
-# # Tools
-# GCC     = gcc
-# RM      = rm -f
-#
-# # Targets ---------------------------------------
-# all:    $(TARGET)
-#
-# $(TARGET):  $(OBJS)
-# 	$(GCC) -o $@  $^
-#
-# 	asm:    $(ASMS)
-#
-# 	clean:
-# 		$(RM) $(TARGET) $(OBJS) $(ASMS)
-#
-# 		# Implicit rules --------------------------------
-# 		%.o:    %.c
-# 			$(GCC) -c $< -o $@
-#
-# 			%.s:    %.c
-# 				$(GCC) -S -masm=intel $< -o $@
-#
+IDIR =../include
+CC=gcc
+CFLAGS=-I$(IDIR)
+
+ODIR=obj
+LDIR =../lib
+
+LIBS=-lm
+
+_DEPS = hellomake.h
+DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+
+_OBJ = hellomake.o hellofunc.o 
+OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+
+
+$(ODIR)/%.o: %.c $(DEPS)
+		$(CC) -c -o $@ $< $(CFLAGS)
+
+hellomake: $(OBJ)
+		gcc -o $@ $^ $(CFLAGS) $(LIBS)
+
+.PHONY: clean
+
+clean:
+		rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
